@@ -37,6 +37,20 @@
                   <div id="fileHelp" class="form-text">Supported formats: PDF, DOCX, CSV, Excel</div>
                 </div>
                 <div id="fileList" class="mb-3"></div>
+                <div class="mb-3">
+                  <button class="btn btn-outline-secondary w-100 mb-2 d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#instructionsCollapse" aria-expanded="false" aria-controls="instructionsCollapse">
+                    <span>Additional Instructions (Optional)</span>
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <div class="collapse" id="instructionsCollapse">
+                    <textarea
+                      class="form-control"
+                      id="userInstruction"
+                      rows="3"
+                      placeholder="Enter any specific instructions or preferences for generating the PowerPoint..."
+                    ></textarea>
+                  </div>
+                </div>
                 <div class="d-grid gap-2">
                   <button type="submit" class="btn btn-primary">Generate Slide</button>
                 </div>

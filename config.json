@@ -1,0 +1,18 @@
+{
+  "slideDescriptions": {
+    "title": "Opening slide with main title, subtitle, and presenter information. Best for starting presentations.",
+    "agenda": "Overview slide with numbered agenda items. Ideal for outlining presentation structure.",
+    "content": "General content slide with title, subtitle, and body text. Good for presenting detailed information.",
+    "split": "Two-column layout with image and bullet points. Perfect for comparing or explaining concepts with visual aid.",
+    "quote": "Impactful quote display with background image. Great for testimonials or emphasizing key statements.",
+    "stats": "Three-card layout showcasing key statistics with descriptions. Ideal for data highlights.",
+    "timeline": "Four-point timeline with dates and descriptions. Best for showing project phases or historical progression.",
+    "comparison": "Side-by-side comparison with images and points. Excellent for product comparisons or pros/cons.",
+    "image_grid": "Six-image gallery layout with captions. Perfect for showcasing multiple products or examples.",
+    "process": "Three-step process flow with icons. Ideal for explaining workflows or procedures.",
+    "team": "Four-person team showcase with photos and roles. Great for introducing team members.",
+    "chart": "Large chart display with analysis points. Best for data visualization and insights.",
+    "summary": "Key takeaways and next steps in two columns. Perfect for concluding main points.",
+    "thank_you": "Closing slide with contact information and social links. Professional presentation ending."
+  }
+}
