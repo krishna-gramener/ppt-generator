@@ -1,5 +1,3 @@
-import { asyncLLM } from "https://cdn.jsdelivr.net/npm/asyncllm@2";
-import PptxGenJS from "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/+esm";
 // Import all templates
 import title from "./templates/title.js";
 import agenda from "./templates/agenda.js";
@@ -15,37 +13,19 @@ import team from "./templates/team.js";
 import chart from "./templates/chart.js";
 import summary from "./templates/summary.js";
 import thankYou from "./templates/thank_you.js";
-
 // Initialize PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.worker.min.js";
 
 // Template mapping
-const templates = {
-  title,
-  agenda,
-  content,
-  split,
-  quote,
-  stats,
-  timeline,
-  comparison,
-  image_grid: imageGrid,
-  process,
-  team,
-  chart,
-  summary,
-  thank_you: thankYou,
-};
+const templates = { title, agenda, content, split, quote, stats, timeline, comparison, image_grid: imageGrid, process, team, chart, summary, thank_you: thankYou };
 
 // DOM Elements
-
 const fileInput = document.getElementById("fileInput");
 const fileList = document.getElementById("fileList");
 const uploadForm = document.getElementById("uploadForm");
-const downloadBtn = document.getElementById("downloadPPTX");
-const downloadContainer = document.getElementById("downloadContainer");
 const userInstruction = document.getElementById("userInstruction");
-
+const slidesPreview = document.getElementById('slidesPreview');
+const slidesList = document.getElementById('slidesList');
 // Get slide descriptions from config
 let slidesDescription = await fetch("./config.json")
   .then((res) => res.json())
@@ -109,7 +89,6 @@ async function processPDF(file) {
     const content = await page.getTextContent();
     text += content.items.map((item) => item.str).join(" ") + "\n";
   }
-
   return { type: "pdf", content: text };
 }
 
@@ -128,7 +107,6 @@ async function processSpreadsheet(file) {
     const worksheet = workbook.Sheets[sheetName];
     result[sheetName] = XLSX.utils.sheet_to_json(worksheet);
   });
-
   return { type: "spreadsheet", content: result };
 }
 
@@ -199,6 +177,7 @@ function getComponents(){
 }
 
 async function getTemplates() {
+  
   let components = getComponents();
   const systemPrompt = `You are an expert PPT template generator. Analyze the provided content and select the most appropriate slides from the available templates.
 For each selected slide:
@@ -239,13 +218,12 @@ ${JSON.stringify(extractedContent, null, 2)}
       }
       // Create temporary div for this slide
       const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = slideTemplate();
+      tempDiv.innerHTML = slideTemplate(640,360);
       const processedContent = {};
 
       // Process each content field
       for (const [fieldName, content] of Object.entries(slide.content)) {
         if (content.type === "image") {
-          console.log(`Generating image for ${fieldName} with prompt: ${content["@prompt"]}`);
           try {
             const imageData = await drawImage({
               prompt: content["@prompt"],
@@ -278,7 +256,6 @@ ${JSON.stringify(extractedContent, null, 2)}
         content: processedContent
       });
     }
-
     return processedSlides;
   } catch (error) {
     console.error("Error generating templates:", error);
@@ -286,26 +263,28 @@ ${JSON.stringify(extractedContent, null, 2)}
   }
 }
 
-// Convert RGB color to HEX
-function rgbToHex(rgb) {
-  const result = rgb.match(/\d+/g);
-  if (!result) return "#000000";
-  return (
-    "#" +
-    result
-      .slice(0, 3)
-      .map((x) => {
-        let hex = parseInt(x).toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
-      })
-      .join("")
-  );
+function displaySlides(slides) {
+  // Clear previous slides
+  slidesList.innerHTML = '';
+  // Add each slide
+  slides.forEach((slide, index) => {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'slide-content';
+    slideDiv.innerHTML = slide.html;
+    slidesList.appendChild(slideDiv);
+  });
+  // Show the preview section
+  slidesPreview.classList.remove('d-none');
 }
 
 async function handleFormSubmit(e) {
   e.preventDefault();
 
   const files = Array.from(fileInput.files);
+
+  // Hide preview
+  slidesPreview.classList.add('d-none');
+  slidesList.innerHTML = '';
 
   // Show file processing loader
   fileList.innerHTML = `<div class="alert alert-info">${createLoader("Processing files...")}</div`;
@@ -321,8 +300,8 @@ async function handleFormSubmit(e) {
     // Generate slides using templates
     const slides = await getTemplates();
 
-    const pptx = await generatePowerPoint(slides);
-
+    // Display the slides
+    displaySlides(slides);
 
     // Display success message
     fileList.innerHTML = `
@@ -335,13 +314,6 @@ async function handleFormSubmit(e) {
           <p>Generated ${slides.length} slides</p>
         </div>
       </div>`;
-
-    // Enable download button
-    downloadContainer.classList.remove("d-none");
-    downloadBtn.disabled = false;
-    downloadBtn.onclick = () => {
-      pptx.writeFile({ fileName: "presentation.pptx" });
-    };
   } catch (error) {
     console.error("Error:", error);
     fileList.innerHTML = `<div class="alert alert-danger">
@@ -351,97 +323,6 @@ async function handleFormSubmit(e) {
       </div>
     </div>`;
   }
-}
-
-
-function getElementPosition(element, rootRect, dpi) {
-  const rect = element.getBoundingClientRect();
-  return {
-    x: (rect.left - rootRect.left) / dpi,
-    y: (rect.top - rootRect.top) / dpi,
-    w: rect.width / dpi,
-    h: rect.height / dpi,
-  };
-}
-
-function adjustImagePosition(position, element, dpi) {
-  if (element.style.objectFit !== "contain") return position;
-  
-  const imgPosition = { ...position };
-  const naturalWidth = element.naturalWidth;
-  const naturalHeight = element.naturalHeight;
-  const imageRatio = naturalWidth / naturalHeight;
-  const containerRatio = position.w / position.h;
-
-  if (imageRatio > containerRatio) {
-    const displayedHeight = position.w * (naturalHeight / naturalWidth);
-    imgPosition.y += (position.h - displayedHeight) / 2;
-    imgPosition.h = displayedHeight;
-  } else {
-    const displayedWidth = position.h * (naturalWidth / naturalHeight);
-    imgPosition.x += (position.w - displayedWidth) / 2;
-    imgPosition.w = displayedWidth;
-  }
-  return imgPosition;
-}
-
-function getTextStyle(element, position, dpi) {
-  const computed = window.getComputedStyle(element);
-  const bgColor = rgbToHex(computed.backgroundColor);
-  const bgMatch = computed.backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
-  const transparency = bgMatch?.[4] ? Math.round((1 - parseFloat(bgMatch[4])) * 100) : 0;
-
-  return {
-    ...position,
-    fontSize: (parseFloat(computed.fontSize) / dpi) * 72,
-    fontFace: computed.fontFamily.split(",")[0].replace(/['"]*/g, ""),
-    color: rgbToHex(computed.color),
-    fill: { color: bgColor, transparency },
-    bold: computed.fontWeight === "bold" || parseInt(computed.fontWeight) >= 700,
-    italic: computed.fontStyle === "italic",
-    underline: computed.textDecorationLine.includes("underline"),
-    align: computed.textAlign || "left",
-  };
-}
-
-async function generatePowerPoint(slides) {
-  const pptx = new PptxGenJS();
-  const dpi = 72;
-  
-  // First define the layout
-  pptx.defineLayout({ name: "PPTGen", width: 1280 / dpi, height: 720 / dpi });
-  
-  // Then set presentation properties including the layout
-  Object.assign(pptx, {
-    title: "Generated Presentation",
-    author: "PPT Generator",
-    layout: "PPTGen",
-  });
-
-  for (const { html } of slides) {
-    const slide = pptx.addSlide();
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
-    const rootRect = tempDiv.getBoundingClientRect();
-
-    Array.from(tempDiv.querySelectorAll("[data-name]")).forEach((element) => {
-      const position = getElementPosition(element, rootRect, dpi);
-      
-      if (element.tagName.toLowerCase() === "img") {
-        const imgPosition = adjustImagePosition(position, element, dpi);
-        slide.addImage({
-          ...imgPosition,
-          ...(element.src.startsWith("data:") 
-            ? { data: element.src } 
-            : { path: element.src }),
-        });
-      } else {
-        slide.addText(element.innerText.trim(), getTextStyle(element, position, dpi));
-      }
-    });
-  }
-
-  return pptx;
 }
 
 async function drawImage({ prompt, aspectRatio }) {
