@@ -2,7 +2,7 @@
 import title from "./templates/title.js";
 import agenda from "./templates/agenda.js";
 import content from "./templates/content.js";
-import split from "./templates/split.js";
+// import split from "./templates/split.js";
 import quote from "./templates/quote.js";
 import stats from "./templates/stats.js";
 import timeline from "./templates/timeline.js";
@@ -17,7 +17,7 @@ import thankYou from "./templates/thank_you.js";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.worker.min.js";
 
 // Template mapping
-const templates = { title, agenda, content, split, quote, stats, timeline, comparison, image_grid: imageGrid, process, team, chart, summary, thank_you: thankYou };
+const templates = { title, agenda, content, quote, stats, timeline, comparison, image_grid: imageGrid, process, team, chart, summary, thank_you: thankYou };
 
 // DOM Elements
 const fileInput = document.getElementById("fileInput");
