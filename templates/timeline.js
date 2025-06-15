@@ -14,7 +14,7 @@ const timeline = (width = 1280, height = 720) => {
   return `<div style="width: ${width}px; height: ${height}px; position: relative; margin: 0 auto; background: white;">
     <div
       data-name="title"
-      data-prompt="Timeline section title (2-4 words)"
+      data-prompt="Strategic timeline title that conveys the progression or evolution being presented (2-5 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -67,7 +67,7 @@ const timeline = (width = 1280, height = 720) => {
           "></div>
           <div
             data-name="point1-date"
-            data-prompt="First timeline date"
+            data-prompt="Precise first milestone date with appropriate formatting (month/quarter/year)"
             contentEditable="true"
             style="
               margin-top: ${20 * heightScale}px;
@@ -81,7 +81,7 @@ const timeline = (width = 1280, height = 720) => {
           </div>
           <div
             data-name="point1-description"
-            data-prompt="Description for first timeline point (5-10 words)"
+            data-prompt="Detailed description of first milestone including key achievements, metrics, and responsible stakeholders (10-15 words)"
             contentEditable="true"
             style="
               margin-top: ${10 * heightScale}px;
@@ -107,7 +107,7 @@ const timeline = (width = 1280, height = 720) => {
           "></div>
           <div
             data-name="point2-date"
-            data-prompt="Second timeline date"
+            data-prompt="Precise second milestone date with appropriate formatting (month/quarter/year)"
             contentEditable="true"
             style="
               margin-top: ${20 * heightScale}px;
@@ -121,7 +121,7 @@ const timeline = (width = 1280, height = 720) => {
           </div>
           <div
             data-name="point2-description"
-            data-prompt="Description for second timeline point (5-10 words)"
+            data-prompt="Detailed description of second milestone including key achievements, metrics, and responsible stakeholders (10-15 words)"
             contentEditable="true"
             style="
               margin-top: ${10 * heightScale}px;
@@ -147,7 +147,7 @@ const timeline = (width = 1280, height = 720) => {
           "></div>
           <div
             data-name="point3-date"
-            data-prompt="Third timeline date"
+            data-prompt="Precise third milestone date with appropriate formatting (month/quarter/year)"
             contentEditable="true"
             style="
               margin-top: ${20 * heightScale}px;
@@ -161,7 +161,7 @@ const timeline = (width = 1280, height = 720) => {
           </div>
           <div
             data-name="point3-description"
-            data-prompt="Description for third timeline point (5-10 words)"
+            data-prompt="Detailed description of third milestone including key achievements, metrics, and responsible stakeholders (10-15 words)"
             contentEditable="true"
             style="
               margin-top: ${10 * heightScale}px;
@@ -187,7 +187,7 @@ const timeline = (width = 1280, height = 720) => {
           "></div>
           <div
             data-name="point4-date"
-            data-prompt="Fourth timeline date"
+            data-prompt="Precise fourth milestone date with appropriate formatting (month/quarter/year)"
             contentEditable="true"
             style="
               margin-top: ${20 * heightScale}px;
@@ -201,7 +201,7 @@ const timeline = (width = 1280, height = 720) => {
           </div>
           <div
             data-name="point4-description"
-            data-prompt="Description for fourth timeline point (5-10 words)"
+            data-prompt="Detailed description of fourth milestone including key achievements, metrics, and responsible stakeholders (10-15 words)"
             contentEditable="true"
             style="
               margin-top: ${10 * heightScale}px;

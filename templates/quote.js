@@ -14,7 +14,7 @@ const quote = (width = 1280, height = 720) => {
   return `<div style="width: ${width}px; height: ${height}px; position: relative; margin: 0 auto;">
     <img
       data-name="background"
-      data-prompt="A subtle, blurred background image that doesn't overpower the text"
+      data-prompt="A contextually relevant, subtle background image that enhances the quote's theme while maintaining readability (specify image rotation, border styling, and object-fit preference if needed)"
       width="${width}"
       height="${height}"
       style="position: absolute; object-fit: cover; filter: brightness(0.5);"
@@ -39,7 +39,7 @@ const quote = (width = 1280, height = 720) => {
       
       <div
         data-name="quote"
-        data-prompt="An impactful quote (15-25 words)"
+        data-prompt="A powerful, thought-provoking quote that resonates with the presentation's theme and audience, with proper text styling (consider text transform, line spacing, character spacing, and text shadow needs)"
         contentEditable="true"
         style="
           font-size: ${36 * Math.min(widthScale, heightScale)}px;
@@ -55,7 +55,7 @@ const quote = (width = 1280, height = 720) => {
 
       <div
         data-name="author"
-        data-prompt="Quote author and their title/role"
+        data-prompt="Quote author's full name with their title, organization, and relevant context that establishes their credibility on the subject"
         contentEditable="true"
         style="
           font-size: ${24 * Math.min(widthScale, heightScale)}px;

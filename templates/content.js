@@ -18,7 +18,7 @@ const slide1 = (width = 1280, height = 720) => {
     <div style="position: absolute; right: 0; top: 0; width: 10px; height: 100%; background: linear-gradient(to bottom, #ff69b4, #ff8c00);"></div>
     <div
       data-name="title"
-      data-prompt="Title of the slide (3-5 words)"
+      data-prompt="Concise, impactful slide title that clearly communicates the main topic or key message (3-6 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -40,7 +40,7 @@ const slide1 = (width = 1280, height = 720) => {
 
     <div
       data-name="subtitle"
-      data-prompt="Subtitle of the slide (3-5 words)"
+      data-prompt="Supporting subtitle that adds context or clarifies the main title with specific details or focus areas (5-10 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -62,7 +62,7 @@ const slide1 = (width = 1280, height = 720) => {
 
     <div
       data-name="body-content"
-      data-prompt="Main body content of the slide (concise, 2-3 sentences)"
+      data-prompt="Detailed main content with key points, relevant data, specific examples, and actionable insights (well-structured sentences)"
       contentEditable="true"
       style="
         position: absolute;

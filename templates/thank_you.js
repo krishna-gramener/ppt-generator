@@ -22,7 +22,7 @@ const thankYou = (width = 1280, height = 720) => {
     ">
       <div
         data-name="thank-you"
-        data-prompt="Thank you message (2-3 words)"
+        data-prompt="Memorable thank you message that reflects the tone and purpose of the presentation (2-5 words)"
         contentEditable="true"
         style="
           font-size: ${64 * Math.min(widthScale, heightScale)}px;
@@ -38,7 +38,7 @@ const thankYou = (width = 1280, height = 720) => {
 
       <div
         data-name="contact-info"
-        data-prompt="Contact information and social media"
+        data-prompt="Comprehensive contact information including name, title, organization, email, phone number, and office location with best times to reach out"
         contentEditable="true"
         style="
           font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -60,7 +60,7 @@ const thankYou = (width = 1280, height = 720) => {
       ">
         <div
           data-name="social-linkedin"
-          data-prompt="LinkedIn URL"
+          data-prompt="LinkedIn URL with professional title and a brief note about connecting"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;
@@ -76,7 +76,7 @@ const thankYou = (width = 1280, height = 720) => {
 
         <div
           data-name="social-twitter"
-          data-prompt="Twitter/X URL"
+          data-prompt="Twitter/X handle with relevant hashtags and recent content topics"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;
@@ -92,7 +92,7 @@ const thankYou = (width = 1280, height = 720) => {
 
         <div
           data-name="social-website"
-          data-prompt="Website URL"
+          data-prompt="Website URL with a brief description of resources available there"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;

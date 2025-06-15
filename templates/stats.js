@@ -14,7 +14,7 @@ const stats = (width = 1280, height = 720) => {
   return `<div style="width: ${width}px; height: ${height}px; position: relative; margin: 0 auto; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
     <div
       data-name="title"
-      data-prompt="Section title for statistics (2-4 words)"
+      data-prompt="Impactful section title for statistics that highlights the significance of the data (2-5 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -50,7 +50,7 @@ const stats = (width = 1280, height = 720) => {
       ">
         <div
           data-name="stat1-number"
-          data-prompt="First statistic number"
+          data-prompt="First statistic number with appropriate formatting (%, $, etc.) that represents a key metric from the data"
           contentEditable="true"
           style="
             font-size: ${64 * Math.min(widthScale, heightScale)}px;
@@ -64,7 +64,7 @@ const stats = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="stat1-description"
-          data-prompt="Description for first statistic (5-10 words)"
+          data-prompt="Detailed description for first statistic that explains its significance, source, and business impact (10-15 words)"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;
@@ -88,7 +88,7 @@ const stats = (width = 1280, height = 720) => {
       ">
         <div
           data-name="stat2-number"
-          data-prompt="Second statistic number"
+          data-prompt="Second statistic number with appropriate formatting (%, $, etc.) that represents a key metric from the data"
           contentEditable="true"
           style="
             font-size: ${64 * Math.min(widthScale, heightScale)}px;
@@ -102,7 +102,7 @@ const stats = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="stat2-description"
-          data-prompt="Description for second statistic (5-10 words)"
+          data-prompt="Detailed description for second statistic that explains its significance, source, and business impact (10-15 words)"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;
@@ -126,7 +126,7 @@ const stats = (width = 1280, height = 720) => {
       ">
         <div
           data-name="stat3-number"
-          data-prompt="Third statistic number"
+          data-prompt="Third statistic number with appropriate formatting (%, $, etc.) that represents a key metric from the data"
           contentEditable="true"
           style="
             font-size: ${64 * Math.min(widthScale, heightScale)}px;
@@ -140,7 +140,7 @@ const stats = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="stat3-description"
-          data-prompt="Description for third statistic (5-10 words)"
+          data-prompt="Detailed description for third statistic that explains its significance, source, and business impact (10-15 words)"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;

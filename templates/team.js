@@ -14,7 +14,7 @@ const team = (width = 1280, height = 720) => {
   return `<div style="width: ${width}px; height: ${height}px; position: relative; margin: 0 auto; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
     <div
       data-name="title"
-      data-prompt="Team section title (2-4 words)"
+      data-prompt="Engaging team section title that highlights the team's value proposition or collective expertise (3-6 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -44,7 +44,7 @@ const team = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="member1-photo"
-          data-prompt="Professional photo of team member 1"
+          data-prompt="Professional, high-quality photo of team member 1 with appropriate object-fit, rotation, and border styling (consider consistent background and framing across all team photos)"
           style="
             width: ${200 * widthScale}px;
             height: ${200 * heightScale}px;
@@ -58,7 +58,7 @@ const team = (width = 1280, height = 720) => {
         />
         <div
           data-name="member1-name"
-          data-prompt="Name of team member 1"
+          data-prompt="Full name of team member 1 with appropriate text styling (consider text transform needs)"
           contentEditable="true"
           style="
             font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -72,7 +72,7 @@ const team = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="member1-title"
-          data-prompt="Job title of team member 1"
+          data-prompt="Detailed job title and key responsibility area of team member 1, highlighting their expertise and role in the organization"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -89,7 +89,7 @@ const team = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="member2-photo"
-          data-prompt="Professional photo of team member 2"
+          data-prompt="Professional, high-quality photo of team member 2 with appropriate object-fit, rotation, and border styling (consider consistent background and framing across all team photos)"
           style="
             width: ${200 * widthScale}px;
             height: ${200 * heightScale}px;
@@ -103,7 +103,7 @@ const team = (width = 1280, height = 720) => {
         />
         <div
           data-name="member2-name"
-          data-prompt="Name of team member 2"
+          data-prompt="Full name of team member 2 with appropriate text styling (consider text transform needs)"
           contentEditable="true"
           style="
             font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -117,7 +117,7 @@ const team = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="member2-title"
-          data-prompt="Job title of team member 2"
+          data-prompt="Detailed job title and key responsibility area of team member 2, highlighting their expertise and role in the organization"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -134,7 +134,7 @@ const team = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="member3-photo"
-          data-prompt="Professional photo of team member 3"
+          data-prompt="Professional, high-quality photo of team member 3 with appropriate object-fit, rotation, and border styling (consider consistent background and framing across all team photos)"
           style="
             width: ${200 * widthScale}px;
             height: ${200 * heightScale}px;
@@ -148,7 +148,7 @@ const team = (width = 1280, height = 720) => {
         />
         <div
           data-name="member3-name"
-          data-prompt="Name of team member 3"
+          data-prompt="Full name of team member 3 with appropriate text styling (consider text transform needs)"
           contentEditable="true"
           style="
             font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -162,7 +162,7 @@ const team = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="member3-title"
-          data-prompt="Job title of team member 3"
+          data-prompt="Detailed job title and key responsibility area of team member 3, highlighting their expertise and role in the organization"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -179,7 +179,7 @@ const team = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="member4-photo"
-          data-prompt="Professional photo of team member 4"
+          data-prompt="Professional, high-quality photo of team member 4 with appropriate object-fit, rotation, and border styling (consider consistent background and framing across all team photos)"
           style="
             width: ${200 * widthScale}px;
             height: ${200 * heightScale}px;
@@ -193,7 +193,7 @@ const team = (width = 1280, height = 720) => {
         />
         <div
           data-name="member4-name"
-          data-prompt="Name of team member 4"
+          data-prompt="Full name of team member 4 with appropriate text styling (consider text transform needs)"
           contentEditable="true"
           style="
             font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -207,7 +207,7 @@ const team = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="member4-title"
-          data-prompt="Job title of team member 4"
+          data-prompt="Detailed job title and key responsibility area of team member 4, highlighting their expertise and role in the organization"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;

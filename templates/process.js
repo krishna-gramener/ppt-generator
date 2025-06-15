@@ -14,7 +14,7 @@ const process = (width = 1280, height = 720) => {
   return `<div style="width: ${width}px; height: ${height}px; position: relative; margin: 0 auto; background: linear-gradient(135deg, #f6f8fa 0%, #f1f4f8 100%);">
     <div
       data-name="title"
-      data-prompt="Process section title (2-4 words)"
+      data-prompt="Descriptive process title that clearly communicates the workflow or methodology being presented (3-5 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -61,7 +61,7 @@ const process = (width = 1280, height = 720) => {
         ">1</div>
         <div
           data-name="step1-title"
-          data-prompt="Title for step 1 (2-3 words)"
+          data-prompt="Action-oriented title for step 1 that clearly describes this phase of the process (2-4 words)"
           contentEditable="true"
           style="
             font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -75,7 +75,7 @@ const process = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="step1-description"
-          data-prompt="Description for step 1 (10-15 words)"
+          data-prompt="Detailed description of step 1 including key actions, responsible parties, tools used, and expected outcomes (15-25 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -117,7 +117,7 @@ const process = (width = 1280, height = 720) => {
         ">2</div>
         <div
           data-name="step2-title"
-          data-prompt="Title for step 2 (2-3 words)"
+          data-prompt="Action-oriented title for step 2 that clearly describes this phase of the process (2-4 words)"
           contentEditable="true"
           style="
             font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -131,7 +131,7 @@ const process = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="step2-description"
-          data-prompt="Description for step 2 (10-15 words)"
+          data-prompt="Detailed description of step 2 including key actions, responsible parties, tools used, and expected outcomes (15-25 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -173,7 +173,7 @@ const process = (width = 1280, height = 720) => {
         ">3</div>
         <div
           data-name="step3-title"
-          data-prompt="Title for step 3 (2-3 words)"
+          data-prompt="Action-oriented title for step 3 that clearly describes this phase of the process (2-4 words)"
           contentEditable="true"
           style="
             font-size: ${24 * Math.min(widthScale, heightScale)}px;
@@ -187,7 +187,7 @@ const process = (width = 1280, height = 720) => {
         </div>
         <div
           data-name="step3-description"
-          data-prompt="Description for step 3 (10-15 words)"
+          data-prompt="Detailed description of step 3 including key actions, responsible parties, tools used, and expected outcomes (15-25 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;

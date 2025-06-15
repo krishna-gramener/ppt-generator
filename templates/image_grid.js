@@ -14,7 +14,7 @@ const imageGrid = (width = 1280, height = 720) => {
   return `<div style="width: ${width}px; height: ${height}px; position: relative; margin: 0 auto; background: white;">
     <div
       data-name="title"
-      data-prompt="Grid section title (2-4 words)"
+      data-prompt="Descriptive gallery title that conveys the theme or purpose of the image collection (3-6 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -44,7 +44,7 @@ const imageGrid = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="image1"
-          data-prompt="First gallery image"
+          data-prompt="High-quality first gallery image with appropriate object-fit, rotation, border styling, and aspect ratio (specify any image transformations needed)"
           style="
             width: 100%;
             height: ${250 * heightScale}px;
@@ -56,7 +56,7 @@ const imageGrid = (width = 1280, height = 720) => {
         />
         <div
           data-name="caption1"
-          data-prompt="Caption for first image (5-8 words)"
+          data-prompt="Informative caption for first image that explains context, significance, and relevance to the presentation theme (8-12 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -72,7 +72,7 @@ const imageGrid = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="image2"
-          data-prompt="Second gallery image"
+          data-prompt="High-quality second gallery image with appropriate object-fit, rotation, border styling, and aspect ratio (specify any image transformations needed)"
           style="
             width: 100%;
             height: ${250 * heightScale}px;
@@ -84,7 +84,7 @@ const imageGrid = (width = 1280, height = 720) => {
         />
         <div
           data-name="caption2"
-          data-prompt="Caption for second image (5-8 words)"
+          data-prompt="Informative caption for second image that explains context, significance, and relevance to the presentation theme (8-12 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -100,7 +100,7 @@ const imageGrid = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="image3"
-          data-prompt="Third gallery image"
+          data-prompt="High-quality third gallery image with appropriate object-fit, rotation, border styling, and aspect ratio (specify any image transformations needed)"
           style="
             width: 100%;
             height: ${250 * heightScale}px;
@@ -112,7 +112,7 @@ const imageGrid = (width = 1280, height = 720) => {
         />
         <div
           data-name="caption3"
-          data-prompt="Caption for third image (5-8 words)"
+          data-prompt="Informative caption for third image that explains context, significance, and relevance to the presentation theme (8-12 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -128,7 +128,7 @@ const imageGrid = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="image4"
-          data-prompt="Fourth gallery image"
+          data-prompt="High-quality fourth gallery image with appropriate object-fit, rotation, border styling, and aspect ratio (specify any image transformations needed)"
           style="
             width: 100%;
             height: ${250 * heightScale}px;
@@ -140,7 +140,7 @@ const imageGrid = (width = 1280, height = 720) => {
         />
         <div
           data-name="caption4"
-          data-prompt="Caption for fourth image (5-8 words)"
+          data-prompt="Informative caption for fourth image that explains context, significance, and relevance to the presentation theme (8-12 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -156,7 +156,7 @@ const imageGrid = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="image5"
-          data-prompt="Fifth gallery image"
+          data-prompt="High-quality fifth gallery image with appropriate object-fit, rotation, border styling, and aspect ratio (specify any image transformations needed)"
           style="
             width: 100%;
             height: ${250 * heightScale}px;
@@ -168,7 +168,7 @@ const imageGrid = (width = 1280, height = 720) => {
         />
         <div
           data-name="caption5"
-          data-prompt="Caption for fifth image (5-8 words)"
+          data-prompt="Informative caption for fifth image that explains context, significance, and relevance to the presentation theme (8-12 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;
@@ -184,7 +184,7 @@ const imageGrid = (width = 1280, height = 720) => {
       <div style="text-align: center;">
         <img
           data-name="image6"
-          data-prompt="Sixth gallery image"
+          data-prompt="High-quality sixth gallery image with appropriate object-fit, rotation, border styling, and aspect ratio (specify any image transformations needed)"
           style="
             width: 100%;
             height: ${250 * heightScale}px;
@@ -196,7 +196,7 @@ const imageGrid = (width = 1280, height = 720) => {
         />
         <div
           data-name="caption6"
-          data-prompt="Caption for sixth image (5-8 words)"
+          data-prompt="Informative caption for sixth image that explains context, significance, and relevance to the presentation theme (8-12 words with appropriate text styling)"
           contentEditable="true"
           style="
             font-size: ${16 * Math.min(widthScale, heightScale)}px;

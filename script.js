@@ -12,8 +12,10 @@ import team from "./templates/team.js";
 import chart from "./templates/chart.js";
 import summary from "./templates/summary.js";
 import thankYou from "./templates/thank_you.js";
-// Initialize PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.worker.min.js";
+// Import document processing functions
+import { processFile } from "./document-processor.js";
+// Import token from auth.js
+import { token } from "./auth.js";
 
 // Template mapping
 const templates = {
@@ -46,17 +48,6 @@ let slidesDescription = await fetch("./config.json")
   .catch((err) => console.log(err));
 
 let extractedContent = "";
-// Get LLM token
-async function initializeLLM() {
-  try {
-    const response = await fetch("https://llmfoundry.straive.com/token", { credentials: "include" });
-    const { token } = await response.json();
-    return token;
-  } catch (error) {
-    console.error("Failed to initialize LLM:", error);
-    return null;
-  }
-}
 
 // Helper function to create loading spinner
 function createLoader(text) {
@@ -67,8 +58,6 @@ function createLoader(text) {
     ${text}
   </div>`;
 }
-
-const token = await initializeLLM();
 
 // Add event listeners
 fileInput.addEventListener("change", handleFileSelection);
@@ -92,155 +81,9 @@ function handleFileSelection(e) {
   }
 }
 
-// File processing functions
-async function processPDF(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-  let text = "";
+// File processing functions have been moved to document-processor.js
 
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    // Get text content only
-    const content = await page.getTextContent();
-    text += content.items.map((item) => item.str).join(" ") + "\n";
-  }
-  return { type: "pdf", content: text };
-}
-
-async function processDOCX(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const imageSummaries = [];
-
-  // Extract both text and images using mammoth's convert
-  const result = await mammoth.convertToHtml(
-    { arrayBuffer },
-    {
-      convertImage: mammoth.images.imgElement(async function (image) {
-        try {
-          // Get image buffer
-          const imageBuffer = await image.read();
-          // Convert to base64
-          const base64Image = convertToBase64(imageBuffer);
-          if (base64Image) {
-            // Get image summary from Gemini
-            const summary = await callGeminiAPI(base64Image);
-            imageSummaries.push(summary);
-          }
-          // Return a placeholder for the image in the HTML
-          return { src: "data:image/png;base64," + base64Image };
-        } catch (error) {
-          console.error("Error processing image:", error);
-          return null;
-        }
-      }),
-    }
-  );
-
-  // Extract plain text from the HTML
-  const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = result.value;
-  let textContent = tempDiv.textContent || tempDiv.innerText;
-  
-  // Concatenate image summaries with text content
-  for (const summary of imageSummaries) {
-    textContent += "\n[Image Description: " + summary + "]\n";
-  }
-
-  return {
-    type: "docx",
-    content: textContent
-  };
-}
-
-async function processSpreadsheet(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const workbook = XLSX.read(arrayBuffer, { type: "array" });
-  const result = {};
-
-  workbook.SheetNames.forEach((sheetName) => {
-    const worksheet = workbook.Sheets[sheetName];
-    result[sheetName] = XLSX.utils.sheet_to_json(worksheet);
-  });
-  return { type: "spreadsheet", content: result };
-}
-
-// Main processing function
-async function processFile(file) {
-  const extension = file.name.split(".").pop().toLowerCase();
-
-  try {
-    switch (extension) {
-      case "pdf":
-        return await processPDF(file);
-      case "docx":
-        return await processDOCX(file);
-      case "csv":
-      case "xls":
-      case "xlsx":
-        return await processSpreadsheet(file);
-      default:
-        throw new Error(`Unsupported file type: ${extension}`);
-    }
-  } catch (error) {
-    console.error(`Error processing ${file.name}:`, error);
-    throw error;
-  }
-}
-
-async function callGeminiAPI(base64Uri) {
-  const base64Data = base64Uri.split(',')[1];
-  
-  try {
-    const response = await fetch(
-      "https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}:pptgen`,
-        },
-        body: JSON.stringify({
-          contents: [{
-            role: "user",
-            parts: [
-              { text: "Capture all the details from this image" },
-              { inline_data: { mime_type: "image/png", data: base64Data }}
-            ]
-          }],
-          generationConfig: { responseModalities: ["TEXT", "IMAGE"] }
-        }),
-      }
-    );
-
-    const data = await response.json();
-    
-    // Extract text response using optional chaining
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text || "Image description unavailable";
-  } catch (error) {
-    console.error("Error calling Gemini API:", error);
-    return "Image description unavailable";
-  }
-}
-
-// Convert canvas/image data to base64
-function convertToBase64(imageData) {
-  if (!imageData) return null;
-  
-  try {
-    if (imageData instanceof HTMLCanvasElement) return imageData.toDataURL("image/png");
-    
-    if (imageData instanceof Uint8Array || imageData instanceof ArrayBuffer) {
-      const binary = Array.from(new Uint8Array(imageData))
-        .map(byte => String.fromCharCode(byte))
-        .join("");
-      return `data:image/png;base64,${btoa(binary)}`;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error converting to base64:", error);
-    return null;
-  }
-}
+// callGeminiAPI and convertToBase64 functions have been moved to document-processor.js
 
 // Call OpenAI API
 async function callLLM(systemPrompt, userMessage) {
@@ -278,40 +121,74 @@ function getComponents() {
     components += `template : ${key}\n${[...tempDiv.querySelectorAll("[data-name]")]
       .map(
         (el) => `${el.dataset.name}:\n    type: ${el.tagName == "IMG" ? "image" : "text"}
-    ${el.tagName == "IMG" ? "@prompt" : "@text"}: ${el.tagName == "IMG" ? "" : el.textContent || el.dataset.prompt}`
+    ${el.tagName == "IMG" ? "@prompt" : "@text"}: ${el.tagName == "IMG" ? "" :el.dataset.prompt}`
       )
       .join("\n")}\n\n`;
   });
   return components;
 }
 
+function applyListContent(element, content) {
+  // Parse items and determine list type
+  const items = content["@text"].split('\n').filter(item => item.trim());
+  const type = element.getAttribute('data-list-type') || (element.tagName === "OL" ? "numbered" : "bullet");
+  element.innerHTML = '';
+  
+  // Marker styles by type
+  const markers = {
+    numbered: { style: "margin-bottom: 20px; padding-left: 50px;", html: i => 
+      `<span style="position: absolute; left: 0; width: 32px; height: 32px; background: #3498db; color: white; border-radius: 50%; text-align: center; line-height: 32px; font-size: 18px;">${i+1}</span>` },
+    bullet: { style: "margin-bottom: 15px; padding-left: 30px;", html: () => 
+      `<span style="position: absolute; left: 0; color: #3498db;">•</span>` },
+    check: { style: "margin-bottom: 15px; padding-left: 30px;", html: () => 
+      `<span style="position: absolute; left: 0; color: #3498db;">✓</span>` },
+    arrow: { style: "margin-bottom: 15px; padding-left: 30px;", html: () => 
+      `<span style="position: absolute; left: 0; color: #e74c3c;">→</span>` }
+  };
+  
+  // Apply items with markers
+  const config = markers[type] || markers.bullet;
+  items.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.style = config.style + " position: relative;";
+    li.innerHTML = `${config.html(i)}${item}`;
+    element.appendChild(li);
+  });
+}
+
 async function getTemplates() {
   // Format prompt for slide generation
   const formatPrompt=`Respond with a JSON array of slides. For each slide include:
-                    - template: name of the template to use
-                    - content: object with component names as keys and their content as values
-                      For text components: { "type": "text", "@text": "content" }
-                      For image components: { "type": "image", "@prompt": "detailed image prompt" }`;
+                     - template: name of the template to use
+                     - content: object with component names as keys and their content as values
+                       For text components: { "type": "text", "@text": "content" }
+                       For image components: { "type": "image", "@prompt": "detailed image prompt" }
+                       
+                     For list components (like agenda-items):
+                     - Format list items as separate lines with a newline character between items
+                     - Do not include bullet points or numbers in the text, as these will be added automatically
+                     - Example for agenda-items: { "type": "text", "@text": "Introduction\nOverview\nKey Points\nConclusion" }`;
   
   // Build the complete system prompt
   const systemPrompt = `${systemPromptInput.value}\n\n${formatPrompt}
 
 components:\n ${getComponents()}
 
-Additional instructions from user: ${userInstruction.value || "None provided"}`;
+${userInstruction.value}`;
 
   // User prompt with available templates and extracted content
   const userPrompt = `Available templates and their purposes:
 ${JSON.stringify(slidesDescription.slideDescriptions, null, 2)}
 
 Extracted content to analyze:
-${JSON.stringify(extractedContent, null, 2)}`;
+${JSON.stringify(extractedContent, null, 2)}
+
+All the slides generated should be titled according to the points in 'Agenda' slide.Generated content for all slides should be properly correlated.`;
 
   try {
     console.log("Generating templates and content...");
     const slideData = JSON.parse(await callLLM(systemPrompt, userPrompt));
     const processedSlides = [];
-    
     // Process each slide
     for (const slide of slideData) {
       const slideTemplate = templates[slide.template];
@@ -335,8 +212,14 @@ ${JSON.stringify(extractedContent, null, 2)}`;
       for (const [fieldName, content] of Object.entries(processedContent)) {
         const element = tempDiv.querySelector(`[data-name="${fieldName}"]`);
         if (element) {
-          if (element.tagName === "IMG") element.src = content;
-          else element.textContent = content["@text"];
+          if (element.tagName === "IMG") {
+            element.src = content;
+          } else if (element.tagName === "OL" || element.tagName === "UL") {
+            applyListContent(element, content);
+          } else {
+            // Regular text content
+            element.textContent = content["@text"];
+          }
         }
       }
       
@@ -434,7 +317,7 @@ async function drawImage({ prompt, aspectRatio }) {
     parameters: { aspectRatio, enhancePrompt: true, sampleCount: 1, safetySetting: "block_only_high" },
   };
   const data = await fetch(
-    "https://llmfoundry.straive.com/vertexai/google/models/imagen-4.0-generate-preview-05-20:predict",
+    "https://llmfoundry.straive.com/vertexai/google/models/imagen-3.0-generate-002:predict",
     {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}:pptgen` },

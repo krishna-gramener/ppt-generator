@@ -15,7 +15,7 @@ const agenda = (width = 1280, height = 720) => {
     <div style="position: absolute; left: 0; top: 0; width: ${width}px; height: ${120 * heightScale}px; background: #2c3e50;">
       <div
         data-name="title"
-        data-prompt="Title for agenda slide (1-2 words)"
+        data-prompt="Engaging title for agenda slide that sets the tone for the presentation (1-3 words)"
         contentEditable="true"
         style="
           position: absolute;
@@ -32,9 +32,10 @@ const agenda = (width = 1280, height = 720) => {
       </div>
     </div>
 
-    <div
+    <ol
       data-name="agenda-items"
-      data-prompt="List 4-6 main agenda items, each with a short description"
+      data-prompt="List 4-6 main agenda items with descriptions"
+      data-list-type="numbered"
       contentEditable="true"
       style="
         position: absolute;
@@ -45,9 +46,11 @@ const agenda = (width = 1280, height = 720) => {
         color: #2c3e50;
         font-family: 'Open Sans', sans-serif;
         line-height: 1.8;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
       "
     >
-      <ol style="list-style-type: none; padding: 0;">
         <li style="margin-bottom: 20px; padding-left: 50px; position: relative;">
           <span style="position: absolute; left: 0; width: 32px; height: 32px; background: #3498db; color: white; border-radius: 50%; text-align: center; line-height: 32px; font-size: 18px;">1</span>
           Introduction
@@ -64,8 +67,7 @@ const agenda = (width = 1280, height = 720) => {
           <span style="position: absolute; left: 0; width: 32px; height: 32px; background: #3498db; color: white; border-radius: 50%; text-align: center; line-height: 32px; font-size: 18px;">4</span>
           Conclusion
         </li>
-      </ol>
-    </div>
+    </ol>
   </div>`;
 };
 

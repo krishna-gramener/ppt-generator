@@ -14,7 +14,7 @@ const comparison = (width = 1280, height = 720) => {
   return `<div style="width: ${width}px; height: ${height}px; position: relative; margin: 0 auto; background: white;">
     <div
       data-name="title"
-      data-prompt="Comparison title (2-4 words)"
+      data-prompt="Clear, compelling comparison title that highlights the key contrast being presented (3-5 words)"
       contentEditable="true"
       style="
         position: absolute;
@@ -43,7 +43,7 @@ const comparison = (width = 1280, height = 720) => {
       <div style="width: ${560 * widthScale}px;">
         <div
           data-name="left-title"
-          data-prompt="Title for left column (1-2 words)"
+          data-prompt="Distinctive title for left option that clearly identifies its unique positioning (2-3 words)"
           contentEditable="true"
           style="
             font-size: ${32 * Math.min(widthScale, heightScale)}px;
@@ -59,7 +59,7 @@ const comparison = (width = 1280, height = 720) => {
         
         <img
           data-name="left-image"
-          data-prompt="Image representing the left option"
+          data-prompt="High-quality image representing the left option with appropriate object-fit, rotation, and border styling if needed"
           style="
             width: 100%;
             height: ${300 * heightScale}px;
@@ -70,18 +70,21 @@ const comparison = (width = 1280, height = 720) => {
           src="https://placehold.co/600x400/e9ecef/495057"
         />
 
-        <div
+        <ul
           data-name="left-points"
-          data-prompt="Key points for left option (3-4 bullet points)"
+          data-prompt="3-4 detailed bullet points for left option with specific metrics, benefits, and differentiators that support decision-making"
+          data-list-type="check"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;
             color: #2c3e50;
             font-family: 'Open Sans', sans-serif;
             line-height: 1.6;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
           "
         >
-          <ul style="list-style-type: none; padding: 0;">
             <li style="margin-bottom: 15px; padding-left: 30px; position: relative;">
               <span style="position: absolute; left: 0; color: #3498db;">✓</span>
               Point 1
@@ -110,7 +113,7 @@ const comparison = (width = 1280, height = 720) => {
       <div style="width: ${560 * widthScale}px;">
         <div
           data-name="right-title"
-          data-prompt="Title for right column (1-2 words)"
+          data-prompt="Distinctive title for right option that clearly identifies its unique positioning (2-3 words)"
           contentEditable="true"
           style="
             font-size: ${32 * Math.min(widthScale, heightScale)}px;
@@ -126,7 +129,7 @@ const comparison = (width = 1280, height = 720) => {
         
         <img
           data-name="right-image"
-          data-prompt="Image representing the right option"
+          data-prompt="High-quality image representing the right option with appropriate object-fit, rotation, and border styling if needed"
           style="
             width: 100%;
             height: ${300 * heightScale}px;
@@ -137,18 +140,21 @@ const comparison = (width = 1280, height = 720) => {
           src="https://placehold.co/600x400/e9ecef/495057"
         />
 
-        <div
+        <ul
           data-name="right-points"
-          data-prompt="Key points for right option (3-4 bullet points)"
+          data-prompt="3-4 detailed bullet points for right option with specific metrics, benefits, and differentiators that support decision-making"
+          data-list-type="check"
           contentEditable="true"
           style="
             font-size: ${20 * Math.min(widthScale, heightScale)}px;
             color: #2c3e50;
             font-family: 'Open Sans', sans-serif;
             line-height: 1.6;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
           "
         >
-          <ul style="list-style-type: none; padding: 0;">
             <li style="margin-bottom: 15px; padding-left: 30px; position: relative;">
               <span style="position: absolute; left: 0; color: #e74c3c;">✓</span>
               Point 1
