@@ -80,6 +80,26 @@
                   <div id="fileHelp" class="form-text ">Supported formats: PDF, DOCX, CSV, Excel</div>
                 </div>
                 <div class="mb-3">
+                  <button class="btn btn-outline-secondary w-100 mb-2 d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#systemPromptCollapse" aria-expanded="false" aria-controls="systemPromptCollapse">
+                    <span>System Prompt</span>
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <div class="collapse" id="systemPromptCollapse">
+                    <textarea
+                      class="form-control"
+                      id="systemPrompt"
+                      rows="6"
+                      placeholder="Customize the system prompt used for slide generation..."
+                    >You are an expert PPT template generator. Analyze the provided content and select the most appropriate slides from the available templates.
+                    For each selected slide:
+                    1. Choose appropriate template based on content type
+                    2. Generate text content for all editable fields
+                    3. For image placeholders, generate descriptive prompts that will create relevant images
+                    </textarea>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
                   <button class="btn btn-outline-secondary w-100 mb-2 d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#instructionsCollapse" aria-expanded="false" aria-controls="instructionsCollapse">
                     <span>Additional Instructions (Optional)</span>
                     <i class="bi bi-chevron-down"></i>

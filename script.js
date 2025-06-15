@@ -2,7 +2,6 @@
 import title from "./templates/title.js";
 import agenda from "./templates/agenda.js";
 import content from "./templates/content.js";
-// import split from "./templates/split.js";
 import quote from "./templates/quote.js";
 import stats from "./templates/stats.js";
 import timeline from "./templates/timeline.js";
@@ -17,15 +16,30 @@ import thankYou from "./templates/thank_you.js";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.worker.min.js";
 
 // Template mapping
-const templates = { title, agenda, content, quote, stats, timeline, comparison, image_grid: imageGrid, process, team, chart, summary, thank_you: thankYou };
+const templates = {
+  title,
+  agenda,
+  content,
+  quote,
+  stats,
+  timeline,
+  comparison,
+  image_grid: imageGrid,
+  process,
+  team,
+  chart,
+  summary,
+  thank_you: thankYou,
+};
 
 // DOM Elements
 const fileInput = document.getElementById("fileInput");
+const systemPromptInput = document.getElementById("systemPrompt");
 const fileList = document.getElementById("fileList");
 const uploadForm = document.getElementById("uploadForm");
 const userInstruction = document.getElementById("userInstruction");
-const slidesPreview = document.getElementById('slidesPreview');
-const slidesList = document.getElementById('slidesList');
+const slidesPreview = document.getElementById("slidesPreview");
+const slidesList = document.getElementById("slidesList");
 // Get slide descriptions from config
 let slidesDescription = await fetch("./config.json")
   .then((res) => res.json())
@@ -86,6 +100,7 @@ async function processPDF(file) {
 
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
+    // Get text content only
     const content = await page.getTextContent();
     text += content.items.map((item) => item.str).join(" ") + "\n";
   }
@@ -94,8 +109,47 @@ async function processPDF(file) {
 
 async function processDOCX(file) {
   const arrayBuffer = await file.arrayBuffer();
-  const result = await mammoth.extractRawText({ arrayBuffer });
-  return { type: "docx", content: result.value };
+  const imageSummaries = [];
+
+  // Extract both text and images using mammoth's convert
+  const result = await mammoth.convertToHtml(
+    { arrayBuffer },
+    {
+      convertImage: mammoth.images.imgElement(async function (image) {
+        try {
+          // Get image buffer
+          const imageBuffer = await image.read();
+          // Convert to base64
+          const base64Image = convertToBase64(imageBuffer);
+          if (base64Image) {
+            // Get image summary from Gemini
+            const summary = await callGeminiAPI(base64Image);
+            imageSummaries.push(summary);
+          }
+          // Return a placeholder for the image in the HTML
+          return { src: "data:image/png;base64," + base64Image };
+        } catch (error) {
+          console.error("Error processing image:", error);
+          return null;
+        }
+      }),
+    }
+  );
+
+  // Extract plain text from the HTML
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = result.value;
+  let textContent = tempDiv.textContent || tempDiv.innerText;
+  
+  // Concatenate image summaries with text content
+  for (const summary of imageSummaries) {
+    textContent += "\n[Image Description: " + summary + "]\n";
+  }
+
+  return {
+    type: "docx",
+    content: textContent
+  };
 }
 
 async function processSpreadsheet(file) {
@@ -133,6 +187,61 @@ async function processFile(file) {
   }
 }
 
+async function callGeminiAPI(base64Uri) {
+  const base64Data = base64Uri.split(',')[1];
+  
+  try {
+    const response = await fetch(
+      "https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}:pptgen`,
+        },
+        body: JSON.stringify({
+          contents: [{
+            role: "user",
+            parts: [
+              { text: "Capture all the details from this image" },
+              { inline_data: { mime_type: "image/png", data: base64Data }}
+            ]
+          }],
+          generationConfig: { responseModalities: ["TEXT", "IMAGE"] }
+        }),
+      }
+    );
+
+    const data = await response.json();
+    
+    // Extract text response using optional chaining
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text || "Image description unavailable";
+  } catch (error) {
+    console.error("Error calling Gemini API:", error);
+    return "Image description unavailable";
+  }
+}
+
+// Convert canvas/image data to base64
+function convertToBase64(imageData) {
+  if (!imageData) return null;
+  
+  try {
+    if (imageData instanceof HTMLCanvasElement) return imageData.toDataURL("image/png");
+    
+    if (imageData instanceof Uint8Array || imageData instanceof ArrayBuffer) {
+      const binary = Array.from(new Uint8Array(imageData))
+        .map(byte => String.fromCharCode(byte))
+        .join("");
+      return `data:image/png;base64,${btoa(binary)}`;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error converting to base64:", error);
+    return null;
+  }
+}
+
 // Call OpenAI API
 async function callLLM(systemPrompt, userMessage) {
   try {
@@ -161,7 +270,7 @@ async function callLLM(systemPrompt, userMessage) {
   }
 }
 
-function getComponents(){
+function getComponents() {
   let components = "";
   Object.entries(templates).forEach(([key, value]) => {
     const tempDiv = document.createElement("div");
@@ -177,38 +286,32 @@ function getComponents(){
 }
 
 async function getTemplates() {
+  // Format prompt for slide generation
+  const formatPrompt=`Respond with a JSON array of slides. For each slide include:
+                    - template: name of the template to use
+                    - content: object with component names as keys and their content as values
+                      For text components: { "type": "text", "@text": "content" }
+                      For image components: { "type": "image", "@prompt": "detailed image prompt" }`;
   
-  let components = getComponents();
-  const systemPrompt = `You are an expert PPT template generator. Analyze the provided content and select the most appropriate slides from the available templates.
-For each selected slide:
-1. Choose appropriate template based on content type
-2. Generate text content for all editable fields
-3. For image placeholders, generate descriptive prompts that will create relevant images
+  // Build the complete system prompt
+  const systemPrompt = `${systemPromptInput.value}\n\n${formatPrompt}
 
-Respond with a JSON array of slides. For each slide include:
-- template: name of the template to use
-- content: object with component names as keys and their content as values
-  For text components: { "type": "text", "@text": "content" }
-  For image components: { "type": "image", "@prompt": "detailed image prompt" }
+components:\n ${getComponents()}
 
-components of template:\n ${components}
+Additional instructions from user: ${userInstruction.value || "None provided"}`;
 
-Additional instructions from user: ${userInstruction.value || "None provided"}
-  `;
-
+  // User prompt with available templates and extracted content
   const userPrompt = `Available templates and their purposes:
 ${JSON.stringify(slidesDescription.slideDescriptions, null, 2)}
 
 Extracted content to analyze:
-${JSON.stringify(extractedContent, null, 2)}
-`;
+${JSON.stringify(extractedContent, null, 2)}`;
 
   try {
     console.log("Generating templates and content...");
-    const response = await callLLM(systemPrompt, userPrompt);
-    const slideData = JSON.parse(response);
-
+    const slideData = JSON.parse(await callLLM(systemPrompt, userPrompt));
     const processedSlides = [];
+    
     // Process each slide
     for (const slide of slideData) {
       const slideTemplate = templates[slide.template];
@@ -216,40 +319,27 @@ ${JSON.stringify(extractedContent, null, 2)}
         console.error(`Template ${slide.template} not found`);
         continue;
       }
-      // Create temporary div for this slide
+      
+      // Create slide HTML
       const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = slideTemplate(640,360);
+      tempDiv.innerHTML = slideTemplate(640, 360);
       const processedContent = {};
 
-      // Process each content field
+      // Process content fields (text and images)
       for (const [fieldName, content] of Object.entries(slide.content)) {
-        if (content.type === "image") {
-          try {
-            const imageData = await drawImage({
-              prompt: content["@prompt"],
-              aspectRatio: "16:9",
-            });
-            processedContent[fieldName] = imageData;
-          } catch (error) {
-            console.error(`Failed to generate image for ${fieldName}:`, error);
-            processedContent[fieldName] = "https://placehold.co/600x400/e9ecef/495057?text=Image+Generation+Failed";
-          }
-        } else {
-          processedContent[fieldName] = content;
-        }
+        processedContent[fieldName] = content.type === "image" ? 
+          await generateImageOrFallback(content["@prompt"], fieldName) : content;
       }
 
-      // Populate content
+      // Apply content to HTML elements
       for (const [fieldName, content] of Object.entries(processedContent)) {
-        const element = [...tempDiv.querySelectorAll(`[data-name="${fieldName}"]`)][0];
+        const element = tempDiv.querySelector(`[data-name="${fieldName}"]`);
         if (element) {
-          if (element.tagName === "IMG") {
-            element.src = content;
-          } else {
-            element.textContent = content['@text'];
-          }
+          if (element.tagName === "IMG") element.src = content;
+          else element.textContent = content["@text"];
         }
       }
+      
       processedSlides.push({
         template: slide.template,
         html: tempDiv.innerHTML,
@@ -263,18 +353,31 @@ ${JSON.stringify(extractedContent, null, 2)}
   }
 }
 
+// Helper function for image generation with fallback
+async function generateImageOrFallback(prompt, fieldName) {
+  try {
+    return await drawImage({
+      prompt: prompt,
+      aspectRatio: "16:9"
+    });
+  } catch (error) {
+    console.error(`Failed to generate image for ${fieldName}:`, error);
+    return "https://placehold.co/600x400/e9ecef/495057?text=Image+Generation+Failed";
+  }
+}
+
 function displaySlides(slides) {
   // Clear previous slides
-  slidesList.innerHTML = '';
+  slidesList.innerHTML = "";
   // Add each slide
   slides.forEach((slide, index) => {
-    const slideDiv = document.createElement('div');
-    slideDiv.className = 'slide-content';
+    const slideDiv = document.createElement("div");
+    slideDiv.className = "slide-content";
     slideDiv.innerHTML = slide.html;
     slidesList.appendChild(slideDiv);
   });
   // Show the preview section
-  slidesPreview.classList.remove('d-none');
+  slidesPreview.classList.remove("d-none");
 }
 
 async function handleFormSubmit(e) {
@@ -283,8 +386,8 @@ async function handleFormSubmit(e) {
   const files = Array.from(fileInput.files);
 
   // Hide preview
-  slidesPreview.classList.add('d-none');
-  slidesList.innerHTML = '';
+  slidesPreview.classList.add("d-none");
+  slidesList.innerHTML = "";
 
   // Show file processing loader
   fileList.innerHTML = `<div class="alert alert-info">${createLoader("Processing files...")}</div`;
