@@ -170,20 +170,21 @@ async function getTemplates() {
                      - Example for agenda-items: { "type": "text", "@text": "Introduction\nOverview\nKey Points\nConclusion" }`;
   
   // Build the complete system prompt
-  const systemPrompt = `${systemPromptInput.value}\n\n${formatPrompt}
+  const systemPrompt = `${systemPromptInput.value}\n\nParaphrase the following instruction and use it to generate slides: "${userInstruction.value}\n\n".
+  
+  \n\n${formatPrompt}
 
 components:\n ${getComponents()}
-
-${userInstruction.value}`;
+`;
 
   // User prompt with available templates and extracted content
   const userPrompt = `Available templates and their purposes:
 ${JSON.stringify(slidesDescription.slideDescriptions, null, 2)}
 
-Extracted content to analyze:
+Analyze the following content and generate slides:
 ${JSON.stringify(extractedContent, null, 2)}
 
-All the slides generated should be titled according to the points in 'Agenda' slide.Generated content for all slides should be properly correlated.`;
+All the slides generated should be titled according to the points in 'Agenda' slide. Generated content for all slides should be properly correlated.`;
 
   try {
     console.log("Generating templates and content...");
