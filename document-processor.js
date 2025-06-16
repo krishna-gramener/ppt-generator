@@ -38,7 +38,7 @@ async function processDOCX(file) {
             imageSummaries.push(summary);
           }
           // Return a placeholder for the image in the HTML
-          return { src: "data:image/png;base64," + base64Image };
+          return { src:base64Image };
         } catch (error) {
           console.error("Error processing image:", error);
           return null;
@@ -89,24 +89,26 @@ async function processFile(file) {
 }
 
 function convertToBase64(imageData) {
+  if (!imageData) return null;
+  
   try {
-    // Convert array buffer to base64
-    let binary = "";
-    const bytes = new Uint8Array(imageData);
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
+    if (imageData instanceof HTMLCanvasElement) return imageData.toDataURL("image/png");
+    
+    if (imageData instanceof Uint8Array || imageData instanceof ArrayBuffer) {
+      const binary = Array.from(new Uint8Array(imageData))
+        .map(byte => String.fromCharCode(byte))
+        .join("");
+      return `data:image/png;base64,${btoa(binary)}`;
     }
-    return btoa(binary);
+    return null;
   } catch (error) {
     console.error("Error converting to base64:", error);
     return null;
   }
 }
 
-
 async function callGeminiAPI(base64Uri) {
   const base64Data = base64Uri.split(',')[1];
-  
   try {
     const response = await fetch(
       "https://llmfoundry.straive.com/gemini/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent",
