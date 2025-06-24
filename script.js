@@ -15,7 +15,16 @@ import thankYou from "./templates/thank_you.js";
 // Import document processing functions
 import { processFile } from "./document-processor.js";
 // Import token from auth.js
-import { token } from "./auth.js";
+import { token as defaultToken } from "./auth.js";
+
+// Get token input element
+const apiTokenInput = document.getElementById("apiToken");
+
+// Function to get the current token
+function getCurrentToken() {
+  const inputToken = apiTokenInput.value.trim();
+  return inputToken || defaultToken;
+}
 
 // Template mapping
 const templates = {
@@ -91,7 +100,7 @@ async function callLLM(systemPrompt, userMessage) {
     const response = await fetch("https://llmfoundry.straive.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}:pptgen`,
+        Authorization: `Bearer ${getCurrentToken()}:pptgen`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

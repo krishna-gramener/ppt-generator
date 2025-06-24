@@ -80,6 +80,21 @@
                   <div id="fileHelp" class="form-text ">Supported formats: PDF, DOCX, CSV, Excel</div>
                 </div>
                 <div class="mb-3">
+                  <button class="btn btn-outline-secondary w-100 mb-2 d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#tokenCollapse" aria-expanded="false" aria-controls="tokenCollapse">
+                    <span>API Token</span>
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <div class="collapse" id="tokenCollapse">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="apiToken"
+                      placeholder="Enter your API token (optional)"
+                    />
+                  </div>
+                </div>
+
+                <div class="mb-3">
                   <button class="btn btn-outline-secondary w-100 mb-2 d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#systemPromptCollapse" aria-expanded="false" aria-controls="systemPromptCollapse">
                     <span>System Prompt</span>
                     <i class="bi bi-chevron-down"></i>
