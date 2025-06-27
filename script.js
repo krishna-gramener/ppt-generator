@@ -21,7 +21,7 @@ import { token as defaultToken } from "./auth.js";
 const apiTokenInput = document.getElementById("apiToken");
 
 // Function to get the current token
-function getCurrentToken() {
+export function getCurrentToken() {
   const inputToken = apiTokenInput.value.trim();
   return inputToken || defaultToken;
 }
@@ -330,7 +330,7 @@ async function drawImage({ prompt, aspectRatio }) {
     "https://llmfoundry.straive.com/vertexai/google/models/imagen-3.0-generate-002:predict",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}:pptgen` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getCurrentToken()}:pptgen` },
       body: JSON.stringify(body),
     }
   ).then((res) => res.json());

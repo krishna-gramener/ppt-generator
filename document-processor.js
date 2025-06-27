@@ -1,5 +1,5 @@
-// Import token from auth.js
-import { token } from "./auth.js";
+// Import getCurrentToken from script.js
+import { getCurrentToken } from "./script.js";
 
 // Initialize PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.worker.min.js";
@@ -8,13 +8,49 @@ async function processPDF(file) {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   let text = "";
+  const imageSummaries = [];
 
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
-    // Get text content only
+    
+    // Get text content
     const content = await page.getTextContent();
     text += content.items.map((item) => item.str).join(" ") + "\n";
+
+    // Check if page has images by looking at the operatorList
+    const opList = await page.getOperatorList();
+    const hasImages = opList.fnArray.some(fn => fn === pdfjsLib.OPS.paintImageXObject);
+
+    if (hasImages) {
+      // Set up canvas for rendering
+      const viewport = page.getViewport({ scale: 1.0 });
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      // Render page to canvas
+      await page.render({
+        canvasContext: context,
+        viewport: viewport
+      }).promise;
+
+      // Convert canvas to base64
+      const base64Uri = canvas.toDataURL('image/png');
+      
+      // Get image description from Gemini
+      const imageDescription = await callGeminiAPI(base64Uri);
+      if (imageDescription) {
+        imageSummaries.push(imageDescription);
+      }
+    }
   }
+
+  // Combine text and image descriptions
+  for (const summary of imageSummaries) {
+    text += "\n[Image Description: " + summary + "]\n";
+  }
+  console.log(text)
   return { type: "pdf", content: text };
 }
 
@@ -116,7 +152,7 @@ async function callGeminiAPI(base64Uri) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}:pptgen`,
+          Authorization: `Bearer ${getCurrentToken()}:pptgen`,
         },
         body: JSON.stringify({
           contents: [{
